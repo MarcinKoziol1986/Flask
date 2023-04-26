@@ -1,0 +1,5 @@
+rower;5;1000
+kola do roweru;40;250
+siodelka;100;50
+ramy do rowerow;20;800
+smar;1000;10
