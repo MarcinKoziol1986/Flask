@@ -19,7 +19,8 @@ def load_data():
                 produkt, ilosc, cena = split_line
                 magazyn[produkt] = {"ilosc": int(ilosc), "cena": float(cena)}
             else:
-                print(f"Błąd wczytywania danych z pliku 'magazyn.txt': Nieprawidłowy format wiersza: {line}")
+                print(f"Błąd wczytywania danych z pliku 'magazyn.txt':"
+                      f" Nieprawidłowy format wiersza: {line}")
     with open('historia.txt', 'r') as f:
         historia = [line.strip() for line in f.readlines()]
     return saldo, magazyn, historia
@@ -51,11 +52,13 @@ def zakup():
         if saldo >= cena * ilosc:
             saldo -= cena * ilosc
             if nazwa in magazyn:
-                magazyn[nazwa] = {"ilosc": magazyn.get(nazwa, {"ilosc": 0})["ilosc"] + ilosc, "cena": cena}
+                magazyn[nazwa] = {"ilosc": magazyn.get(nazwa, {"ilosc": 0})["ilosc"]
+                                           + ilosc, "cena": cena}
             else:
                 magazyn[nazwa] = {"ilosc": ilosc, "cena": cena}
             current_date = datetime.now().strftime("%Y-%m-%d")
-            historia.append(f'{current_date} Zakup: {nazwa}, cena: {cena}, ilość: {ilosc}\n')
+            historia.append(f'{current_date} Zakup: {nazwa}, cena: {cena}, ilość:'
+                            f' {ilosc}\n')
             save_data(saldo, magazyn, historia)
             return redirect(url_for('index'))
         else:
@@ -75,7 +78,8 @@ def sprzedaz():
         magazyn[nazwa]['ilosc'] -= ilosc
         saldo += cena * ilosc
         current_date = datetime.now().strftime("%Y-%m-%d")
-        historia.append(f'{current_date} Sprzedaż: {nazwa}, cena: {cena}, ilość: {ilosc}\n')
+        historia.append(f'{current_date} Sprzedaż: {nazwa}, cena: {cena}, '
+                        f'ilość: {ilosc}\n')
         save_data(saldo, magazyn, historia)
         return redirect(url_for('index'))
     else:
@@ -99,7 +103,8 @@ def historia(start, end):
         if 0 <= start < len(historia) and 0 <= end <= len(historia):
             historia = historia[start:end]
         else:
-            error_msg = f"Nieprawidłowy zakres indeksów. Możliwy zakres to od 0 do {len(historia) - 1}."
+            error_msg = f"Nieprawidłowy zakres indeksów. Możliwy zakres to " \
+                        f"od 0 do {len(historia) - 1}."
             return render_template('historia.html', error=error_msg)
 
     parsed_history = []
@@ -111,9 +116,12 @@ def historia(start, end):
         parsed_history.append({
             'data': date,
             'typ': operation.split(':')[0].strip(),
-            'produkt': re.findall(r'([a-zA-Z\s]+),', operation)[0].strip() if re.findall(r'([a-zA-Z\s]+),', operation) else '',
-            'ilosc': int(re.findall(r'ilość:\s(\d+)', operation)[0]) if re.findall(r'ilość:\s(\d+)', operation) else 0,
-            'cena': float(re.findall(r'cena:\s([0-9.]+)', operation)[0]) if re.findall(r'cena:\s([0-9.]+)', operation) else 0
+            'produkt': re.findall(r'([a-zA-Z\s]+),', operation)[0].strip() if
+            re.findall(r'([a-zA-Z\s]+),', operation) else '',
+            'ilosc': int(re.findall(r'ilość:\s(\d+)', operation)[0]) if
+            re.findall(r'ilość:\s(\d+)', operation) else 0,
+            'cena': float(re.findall(r'cena:\s([0-9.]+)', operation)[0]) if
+            re.findall(r'cena:\s([0-9.]+)', operation) else 0
         })
     return render_template('historia.html', historia=parsed_history)
 
